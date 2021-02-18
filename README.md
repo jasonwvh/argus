@@ -1,4 +1,4 @@
-![logo](src/argus_logo_t.png)
+![logo](src/argus_logotext_t.png)
 
 # Argus
 
