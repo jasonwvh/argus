@@ -1,27 +1,25 @@
 import React from "react";
 import "./App.css";
 import placeholder from "./ph.jpg";
-const fs = require("fs");
-const sdk = require("microsoft-cognitiveservices-speech-sdk");
+
 const ComputerVisionClient = require("@azure/cognitiveservices-computervision")
     .ComputerVisionClient;
 const ApiKeyCredentials = require("@azure/ms-rest-js").ApiKeyCredentials;
-var subscriptionKey = "2ccf832cfa344c5786b256cdccda7c02";
-var serviceRegion = "westus";
-const speechConfig = sdk.SpeechConfig.fromSubscription(
-    subscriptionKey,
-    serviceRegion
-);
-const audioConfig = sdk.AudioConfig.fromDefaultSpeakerOutput();
-
-const synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
-
 const computerVisionClient = new ComputerVisionClient(
     new ApiKeyCredentials({
         inHeader: { "Ocp-Apim-Subscription-Key": process.env.REACT_APP_CV_KEY },
     }),
     process.env.REACT_APP_CV_ENDPOINT
 );
+
+const sdk = require("microsoft-cognitiveservices-speech-sdk");
+var serviceRegion = "westus";
+const speechConfig = sdk.SpeechConfig.fromSubscription(
+    process.env.REACT_APP_TS_KEY,
+    serviceRegion
+);
+const audioConfig = sdk.AudioConfig.fromDefaultSpeakerOutput();
+const synthesizer = new sdk.SpeechSynthesizer(speechConfig, audioConfig);
 
 const fpsInterval = 5000;
 var now, then, elapsed;
