@@ -11,10 +11,20 @@ const computerVisionClient = new ComputerVisionClient(
     process.env.REACT_APP_CV_ENDPOINT
 );
 
-const fpsInterval = 5000;
+const fpsInterval = 3000;
 var now, then, elapsed;
 
 class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            // 1: far
+            // 2: near
+            // 3: very near
+            vibrateStatus: 1,
+        };
+    }
+
     videoRef = React.createRef();
     canvasRef = React.createRef();
 
@@ -127,10 +137,38 @@ class App extends React.Component {
                 },
             ];
         }
-
         console.log(predictions);
 
+        this.checkRect(predictions);
         this.renderPredictions(predictions);
+        this.vibrate();
+    };
+
+    checkRect = (predictions) => {
+        let highest = 1;
+        let status = 1;
+
+        predictions.forEach((prediction) => {
+            const rectangle = prediction.rectangle;
+            console.log("w, h", rectangle.w, rectangle.h);
+
+            if ((rectangle.w < 300) | (rectangle.w < 300)) {
+                status = 1;
+            } else if (
+                ((rectangle.w >= 300) & (rectangle.w < 400)) |
+                ((rectangle.h >= 300) & (rectangle.h < 400))
+            ) {
+                status = 2;
+            } else if ((rectangle.w >= 400) | (rectangle.h >= 400)) {
+                status = 3;
+            } else status = 1;
+
+            if (status >= highest) {
+                highest = status;
+            }
+        });
+
+        this.setState({ vibrateStatus: highest });
     };
 
     // Retrieve predictions from Azure Computer Vision
@@ -147,6 +185,7 @@ class App extends React.Component {
     // Draw bounding box
     renderPredictions = (predictions) => {
         const ctx = this.canvasRef.current.getContext("2d");
+
         console.log(ctx.canvas.width, ctx.canvas.height);
 
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
@@ -177,6 +216,28 @@ class App extends React.Component {
             ctx.fillStyle = "#000000";
             ctx.fillText(prediction.object, x, y);
         });
+    };
+
+    vibrate = () => {
+        const { vibrateStatus } = this.state;
+
+        switch (vibrateStatus) {
+            case 1:
+                console.log("vibrating far");
+                navigator.vibrate([100, 100, 100]);
+                break;
+            case 2:
+                console.log("vibrating near");
+                navigator.vibrate([200, 200, 200]);
+                break;
+            case 3:
+                console.log("vibrating very near");
+                navigator.vibrate([300, 300, 300]);
+                break;
+            default:
+                console.log("vibrating default");
+                navigator.vibrate(100);
+        }
     };
 
     render() {
