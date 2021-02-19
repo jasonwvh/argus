@@ -1,14 +1,13 @@
-import { auto } from "async";
 import React from "react";
-import logotext from "./argus_logotext_t.png";
+import logotext from "./logotext.png";
 
 class LoadingScreen extends React.Component {
     render() {
         return (
             <div
                 style={{
-                    width: "50vw",
-                    height: "50vh",
+                    height: "100vh",
+                    width: "100vw",
                     display: "flex",
                     margin: "auto",
                     textAlign: "center",
@@ -18,6 +17,7 @@ class LoadingScreen extends React.Component {
             >
                 <img
                     style={{
+                        height: "50%",
                         display: "flex",
                         margin: "auto",
                         textAlign: "center",
