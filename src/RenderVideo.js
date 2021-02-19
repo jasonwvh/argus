@@ -33,11 +33,25 @@ class RenderVideo extends React.Component {
             // 3: very near
             vibrateStatus: 1,
             videoLoaded: false,
+            height: 523,
+            width: 411,
         };
     }
 
     videoRef = React.createRef();
     canvasRef = React.createRef();
+
+    resizeCanvas = () => {
+        this.setState({
+            height: window.innerHeight,
+            width: window.innerWidth,
+        });
+    };
+
+    componentWillMount() {
+        this.resizeCanvas();
+        window.addEventListener("resize", this.resizeCanvas);
+    }
 
     componentDidMount() {
         this.setupCamera();
@@ -69,8 +83,6 @@ class RenderVideo extends React.Component {
                     audio: false,
                     video: {
                         facingMode: "environment",
-                        width: { ideal: 500 },
-                        height: { ideal: 600 },
                     },
                 })
                 .then((stream) => {
@@ -95,10 +107,17 @@ class RenderVideo extends React.Component {
 
         var canvas = document.createElement("CANVAS");
 
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
+        //canvas.width = video.videoWidth;
+        //canvas.height = video.videoHeight;
 
-        canvas.getContext("2d").drawImage(video, 0, 0);
+        canvas.width = this.state.width;
+        canvas.height = this.state.height;
+
+        console.log("wh", canvas.width, canvas.height);
+
+        canvas
+            .getContext("2d")
+            .drawImage(video, 0, 0, canvas.width, canvas.height);
 
         var dataUri = canvas.toDataURL("image/" + format, quality);
         var data = dataUri.split(",")[1];
@@ -144,6 +163,7 @@ class RenderVideo extends React.Component {
 
         if (this.state.videoLoaded) {
             frame = await this.grabFrame(this.videoRef.current).blob;
+            console.log(frame);
         } else {
             frame = placeholder;
         }
@@ -213,7 +233,6 @@ class RenderVideo extends React.Component {
 
         console.log(objectsText);
         this.setState({ vibrateStatus: highest });
-        // this.vibrate();
         this.sayText(objectsText);
     };
 
@@ -232,7 +251,8 @@ class RenderVideo extends React.Component {
     renderPredictions = (predictions) => {
         const ctx = this.canvasRef.current.getContext("2d");
 
-        console.log(ctx.canvas.width, ctx.canvas.height);
+        console.log("canvas", ctx.canvas.width, ctx.canvas.height);
+        console.log("vid", this.state.width, this.state.height);
 
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
         // Font options.
@@ -287,12 +307,13 @@ class RenderVideo extends React.Component {
     };
 
     render() {
+        const { height, width } = this.state;
         return (
-            <div>
+            <div className="container">
                 <video
                     className="video-wrapper"
-                    height="600"
-                    width="500"
+                    height={height}
+                    width={width}
                     autoPlay
                     playsInline
                     muted
@@ -300,8 +321,8 @@ class RenderVideo extends React.Component {
                 />
                 <canvas
                     className="video-wrapper"
-                    height="600"
-                    width="500"
+                    height={height}
+                    width={width}
                     ref={this.canvasRef}
                 />
             </div>
