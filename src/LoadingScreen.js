@@ -17,7 +17,8 @@ class LoadingScreen extends React.Component {
             >
                 <img
                     style={{
-                        height: "50%",
+                        maxWidth: "70%",
+                        maxHeight: "70%",
                         display: "flex",
                         margin: "auto",
                         textAlign: "center",
