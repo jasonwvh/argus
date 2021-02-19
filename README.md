@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="src/argus_logotext_t.png">
+  <img src="src/logotext.png">
 </p>
 
 ### Object detection PWA using Azure Cognitive Services
