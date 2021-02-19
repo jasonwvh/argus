@@ -161,7 +161,7 @@ class RenderVideo extends React.Component {
                         w: 135,
                         h: 85,
                     },
-                    object: "kitchen appliance",
+                    object: "This is a test ",
                     confidence: 0.501,
                 },
                 {
@@ -171,7 +171,7 @@ class RenderVideo extends React.Component {
                         w: 185,
                         h: 46,
                     },
-                    object: "computer keyboard",
+                    object: "This is another test ",
                     confidence: 0.51,
                 },
             ];
@@ -189,18 +189,20 @@ class RenderVideo extends React.Component {
 
         predictions.forEach((prediction) => {
             console.log(prediction.object);
-            objectsText = objectsText + String(prediction.object) + " ";
+
             const rectangle = prediction.rectangle;
             console.log("w, h", rectangle.w, rectangle.h);
 
-            if ((rectangle.w < 300) | (rectangle.w < 300)) {
+            if ((rectangle.w < 200) | (rectangle.w < 200)) {
                 status = 1;
             } else if (
-                ((rectangle.w >= 300) & (rectangle.w < 400)) |
-                ((rectangle.h >= 300) & (rectangle.h < 400))
+                ((rectangle.w >= 200) & (rectangle.w < 400)) |
+                ((rectangle.h >= 200) & (rectangle.h < 400))
             ) {
+                objectsText = objectsText + String(prediction.object) + " ";
                 status = 2;
             } else if ((rectangle.w >= 400) | (rectangle.h >= 400)) {
+                objectsText = objectsText + String(prediction.object) + " ";
                 status = 3;
             } else status = 1;
 
@@ -211,7 +213,7 @@ class RenderVideo extends React.Component {
 
         console.log(objectsText);
         this.setState({ vibrateStatus: highest });
-        this.vibrate();
+        // this.vibrate();
         this.sayText(objectsText);
     };
 
@@ -272,11 +274,11 @@ class RenderVideo extends React.Component {
                 break;
             case 2:
                 console.log("vibrating near");
-                navigator.vibrate([200, 200, 200]);
+                navigator.vibrate([300, 300, 300]);
                 break;
             case 3:
                 console.log("vibrating very near");
-                navigator.vibrate([300, 300, 300]);
+                navigator.vibrate([500, 500, 500]);
                 break;
             default:
                 console.log("vibrating default");
